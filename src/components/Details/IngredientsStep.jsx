@@ -10,8 +10,22 @@ export default function IngredientsStep({ ingredients, currentRecipe, stepsProgr
   useEffect(() => {
     const steps = [];
     const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const checkboxes = document.querySelectorAll('input[type=\'checkbox\']');
 
     if (inProgress) {
+      if (!inProgress[curr]) {
+        if (ingredients) {
+          for (let index = 0; index <= ingredients.length; index += 1) {
+            steps.push({
+              step: 'step-not-checked',
+              checked: false,
+              index,
+            });
+          }
+        }
+        setStepsClassName(steps);
+        return;
+      }
       const keys = Object.keys(inProgress[curr]);
       const recipe = keys.find((key) => key === currentRecipe.id);
 
@@ -19,12 +33,15 @@ export default function IngredientsStep({ ingredients, currentRecipe, stepsProgr
         const arrayIds = inProgress[curr][currentRecipe.id];
         let nome = '';
         let valor = false;
+
         for (let index = 0; index <= ingredients.length; index += 1) {
           for (let index2 = 0; index2 < arrayIds.length; index2 += 1) {
-            console.log('comparando isso: ' + index + ' com isso: ' + arrayIds[index2]);
+            console.log(`comparando isso: ${index} com isso: ${arrayIds[index2]}`);
             if (index === (Number.parseInt(arrayIds[index2]))) {
               nome = 'step-checked';
               valor = true;
+              checkboxes[index].checked = true;
+              break;
             } else {
               nome = 'step-not-checked';
               valor = false;
@@ -36,26 +53,49 @@ export default function IngredientsStep({ ingredients, currentRecipe, stepsProgr
             index,
           });
         }
+        setStepsClassName(steps);
+      }
+    } else {
+      if (ingredients) {
+        for (let index = 0; index <= ingredients.length; index += 1) {
+          steps.push({
+            step: 'step-not-checked',
+            checked: false,
+            index,
+          });
+        }
       }
       setStepsClassName(steps);
     }
-    // retorna array inProgress[curr][currentRecipe.id]
   }, []);
 
   // Pupula o estado que gerencia a classe CSS dos ingredientes
   const populateSteps = () => {
-    const steps = [];
+    const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
 
-    if (ingredients) {
-      for (let index = 0; index <= ingredients.length; index += 1) {
-        steps.push({
-          step: 'step-not-checked',
-          checked: false,
-          index,
-        });
+    if (inProgress) {
+      if (!inProgress[curr]) {
+        return;
       }
+      const keys = Object.keys(inProgress[curr]);
+      const recipe = keys.find((key) => key === currentRecipe.id);
+
+      if (recipe) {
+        return;
+      }
+      const steps = [];
+
+      if (ingredients) {
+        for (let index = 0; index <= ingredients.length; index += 1) {
+          steps.push({
+            step: 'step-not-checked',
+            checked: false,
+            index,
+          });
+        }
+      }
+      setStepsClassName(steps);
     }
-    setStepsClassName(steps);
   };
 
   // carrega local storage dos ingredientes
@@ -94,7 +134,7 @@ export default function IngredientsStep({ ingredients, currentRecipe, stepsProgr
   };
 
   useEffect(() => {
-    // populateSteps();
+    populateSteps();
     loadIngredientesLocalStorage();
   }, [ingredients]);
 
@@ -107,15 +147,6 @@ export default function IngredientsStep({ ingredients, currentRecipe, stepsProgr
 
     if (stepsClassName[targetId].checked) {
       step = 'step-not-checked';
-      if (type === 'bebidas') {
-        // const { cocktails } = JSON.parse(localStorage.getItem('inProgressRecipes'));
-        // console.log(cocktails[id]);
-        // // const exist = cocktails[id].find((cocktail) => cocktail);
-        // // console.log(exist);
-
-      }
-      // localStorage.removeItem('inProgressRecipes', JSON
-      //   .stringify({ ...newLocalStorage, [curr]: { ...newLocalStorage[curr], [id]: [...newLocalStorage[curr][id], ingredients[targetId].ingredient] } }));
     }
 
     setStepsClassName([
