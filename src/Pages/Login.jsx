@@ -34,7 +34,7 @@ export default function Login() {
     localStorage.setItem('user', JSON.stringify({ email: user.email }));
     localStorage.setItem('mealsToken', 1);
     localStorage.setItem('cocktailsToken', 1);
-    localStorage.setItem('doneRecipes', JSON.stringify([{}]));
+    localStorage.setItem('doneRecipes', JSON.stringify([]));
     localStorage.setItem('favoriteRecipes', JSON.stringify([]));
     history.push('/comidas');
   };
@@ -65,7 +65,6 @@ export default function Login() {
           onChange={ (event) => handleChange(event) }
         />
       </Form.Group>
-
       <Button
         disabled={ !disabledButton }
         variant="secondary"
@@ -76,7 +75,6 @@ export default function Login() {
       >
         Entrar
       </Button>
-
     </Form>
   );
 }
